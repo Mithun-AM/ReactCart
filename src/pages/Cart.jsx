@@ -1,63 +1,66 @@
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { NavLink } from "react-router-dom";
 import CartItem from "../components/CartItem";
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
+import { setSelectedCategory } from "../redux/Slices/CategorySlice";
 
 export default function Cart() {
-
-  const { cart } = useSelector((state) => state)
+  const dispatch = useDispatch();
+  const { cart } = useSelector((state) => state);
   const [totalAmt, setTotalAmt] = useState(0);
 
   useEffect(() => {
-    setTotalAmt(
-      cart.reduce((sum, item) => sum + item.price, 0)
-    )
-  }, [cart])
+    setTotalAmt(cart.reduce((sum, item) => sum + (item.price * (1 - (item.discount || 0) / 100)), 0));
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [cart]);
+
+  function handleCheckOut() {
+    toast("Checkout feature will be added soon!", { icon: "⏳" });
+  }
 
   return (
-    <div className="mt-20">
-      {
-        cart.length > 0 ?
-          (
-            <div className="w-10/12 max-w-6xl mx-auto flex p-6 gap-16 justify-between mb-10">
-              {/* left Cart Item*/}
-              <div className="w-[60%]">
-                {
-                  cart.map((item, index) => {
-                    return <CartItem key={item.id} item={item} itemIdx={index} />
-                  })
-                }
-              </div>
+    <div className={`${cart.length > 0 ? "mt-24 mb-10 px-4 md:px-10" : "h-screen flex justify-center items-center text-center"}`}>
+      {cart.length > 0 ? (
+        <div className="w-full max-w-7xl mx-auto flex flex-col md:flex-row gap-10 md:gap-16">
+          {/* Left - Cart Items */}
+          <div className="w-full md:w-2/3 flex flex-col gap-4">
+            {cart.map((item, index) => (
+              <CartItem key={item.id} item={item} itemIdx={index} />
+            ))}
+          </div>
 
-              {/* right Summary*/}
-              <div className="w-[30%] flex flex-col gap-8 justify-between">
+          {/* Right - Summary */}
+          <div className="w-full md:w-1/3 bg-white shadow-lg rounded-lg p-6 self-start sticky top-24">
+            <h2 className="md:text-xl font-semibold text-gray-800 uppercase">Your Cart</h2>
+            <p className="text-2xl font-bold text-green-700 uppercase my-3">Summary</p>
+            <p className="md:text-lg font-medium text-gray-700">
+              Total Items: <span className="font-bold">{cart.length}</span>
+            </p>
+            <p className="md:text-xl font-semibold text-gray-700 mt-4">
+              Total Amount: <span className="font-bold text-black">${totalAmt.toFixed(2)}</span>
+            </p>
 
-                <div className="mt-5">
-                  <p className="text-xl text-[#166534] uppercase font-semibold">Your Cart</p>
-                  <p className="text-5xl font-[600] text-[#15803d] uppercase mb-4">Summary</p>
-                  <p className="font-[600] text-xl text-slate-700">
-                    Total Items: <span className="font-bold">{cart.length}</span>
-                  </p>
-                </div>
-
-                <div className="mb-4">
-                  <p className="text-slate-700 text-xl font-semibold mb-5 ">Total Amount: <span className="font-bold ml-2 text-black">${totalAmt.toFixed(2)}</span>
-                  </p>
-                  <button className="text-lg w-full py-2.5 rounded-lg font-bold text-white bg-[#15803d] border-2 border-[#15803d] hover:bg-white hover:text-[#15803d] transition-all duration-300 ease-in">Checkout Now</button>
-                </div>
-              </div>
-            </div>
-          ) :
-          (
-            <div className="w-screen h-[calc(100vh-80px)] flex flex-col gap-6 justify-center items-center">
-              <h2 className="font-semibold text-xl">Cart Empty</h2>
-              <NavLink to="/">
-                <button className="bg-[#16a34a] text-white text-md uppercase font-[600] py-3 px-10 rounded-md
-        border-[#16a34a] border-2 hover:bg-white hover:text-[#16a34a] ease-in transition-all duration-300">Show Now</button>
-              </NavLink>
-            </div>
-          )
-      }
+            <button
+              onClick={handleCheckOut}
+              className="mt-6 w-full py-3 rounded-lg font-bold text-white bg-green-600 border-2 border-green-600 
+              hover:bg-white hover:text-green-600 transition-all duration-300 cursor-not-allowed"
+            >
+              Checkout Now
+            </button>
+          </div>
+        </div>
+      ) : (
+        <div className="flex flex-col justify-center items-center h-screen text-center space-y-4">
+          <h2 className="font-semibold text-lg md:text-xl text-gray-700">Your Cart is Empty</h2>
+          <NavLink to="/" onClick={() => dispatch(setSelectedCategory("Categories"))}>
+            <button className="bg-green-600 text-white text-md uppercase font-semibold py-3 px-6 rounded-lg 
+      border-green-600 border-2 hover:bg-white hover:text-green-600 transition-all duration-300">
+              Shop Now
+            </button>
+          </NavLink>
+        </div>
+      )}
     </div>
   );
 }

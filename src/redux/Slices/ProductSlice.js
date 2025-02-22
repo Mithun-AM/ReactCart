@@ -1,21 +1,39 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
-const API_URL = "https://fakestoreapi.com/products";
+const API_URL = "https://fakestoreapi.in/api/products";
 
-export const fetchProducts = createAsyncThunk("products/fetch", async () => {
-  const response = await fetch(API_URL);
-  const data = await response.json();
-  return data;
+export const fetchProducts = createAsyncThunk("products/fetch", async ({ id = null, page = 1,category=null }) => {
+  // console.log(category)
+  let fetchUrl = API_URL;
+  if (id) {
+    fetchUrl = `${API_URL}/${id}`;
+  }else if(category){
+    fetchUrl = `${API_URL}/category?type=${category}`;
+  }else {
+    fetchUrl = `${API_URL}?page=${page}`;
+  }
+
+  const response = await fetch(fetchUrl);
+  const obj = await response.json();
+  // console.log(obj)
+
+  return id ? obj.product : { products: obj.products, page }; 
 });
 
 const ProductSlice = createSlice({
   name: "products",
   initialState: {
-    items: [],
+    items: [], // Stores multiple products
+    selectedItem: null, // Stores a single product
     status: "idle",
     error: null,
+    currentPage: 1,
   },
-  reducers: {},
+  reducers: {
+    setPage: (state, action) => {
+      state.currentPage = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchProducts.pending, (state) => {
@@ -23,7 +41,13 @@ const ProductSlice = createSlice({
       })
       .addCase(fetchProducts.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.items = action.payload;
+        if (action.payload.products) {
+          state.items = action.payload.products;
+          state.selectedItem = null;
+          state.currentPage = action.payload.page;
+        } else {
+          state.selectedItem = action.payload;
+        }
       })
       .addCase(fetchProducts.rejected, (state, action) => {
         state.status = "failed";
@@ -32,4 +56,5 @@ const ProductSlice = createSlice({
   },
 });
 
+export const { setPage } = ProductSlice.actions;
 export default ProductSlice.reducer;

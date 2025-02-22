@@ -1,3 +1,17 @@
+.spinner-container {
+   position: fixed;
+   top: 0;
+   left: 0;
+   width: 100vw;
+   height: 100vh;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   background-color: rgba(255, 255, 255, 0.6);
+   backdrop-filter: blur(5px);
+   z-index: 50;
+   overflow: hidden;
+}
 
 .spinner {
    width: 56px;
@@ -19,14 +33,14 @@
 }
 
 .spinner::before {
-   --c: radial-gradient(farthest-side,#14242e 92%,#0000);  /* 🔴 Red Inner Circle */
+   --c: radial-gradient(farthest-side,#50a060 100%,#0000);
    margin: 4.5px;
    background-size: 9px 9px;
    animation-timing-function: linear;
 }
 
 .spinner::after {
-   --c: radial-gradient(farthest-side,#50a060 92%,#0000); /* 🔵 Blue Outer Circle */
+   --c: radial-gradient(farthest-side, #0b529e 92%, #05326200);
 }
 
 @keyframes spinner-3hs4a3 {

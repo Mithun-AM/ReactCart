@@ -1,60 +1,143 @@
-import { useSelector,useDispatch } from "react-redux";
-import { useParams } from "react-router-dom";
-import { toast } from 'react-hot-toast';
+import { useSelector, useDispatch } from "react-redux";
+import { useParams, Link } from "react-router-dom";
+import { toast } from "react-hot-toast";
 import { add, remove } from "../redux/Slices/CartSlice";
+import { useEffect, useState } from "react";
+import { fetchProducts } from "../redux/Slices/ProductSlice";
+import Spinner from "../components/Spinner";
 
 export default function SingleProduct() {
+  const { cart } = useSelector((state) => state);
+  const { selectedItem: product, status } = useSelector((state) => state.products);
+  const dispatch = useDispatch();
+  const { productId } = useParams();
+  const [showMore, setShowMore] = useState(false);
 
-    const { cart } = useSelector((state) => state);
-    const dispatch = useDispatch();
-
-    const { productId } = useParams();
-    const product = useSelector((state) =>
-        state.products.items.find((p) => p.id === Number(productId))
-    )
-    console.log(product);
-
-    if (!product) {
-        return <div className="h-screen w-full flex justify-center items-center text-2xl font-semibold text-[#50a060]">Product not found</div>;
+  useEffect(() => {
+    if (productId) {
+      dispatch(fetchProducts({ id: Number(productId) }));
     }
+  }, [productId, dispatch]);
 
-    const addToCart = () => {
-        dispatch(add(product));
-        toast.success("Item added to Cart");
-      }
-    
-      const removeFromCart = () => {
-        dispatch(remove(product.id));
-        toast.error("Item removed from Cart");
-      }
-
+  if (status === "loading") {
     return (
-        <div className="flex flex-col items-center justify-center mt-20">
-            <h1 className="text-3xl font-bold">{product.title}</h1>
-            <img src={product.image} alt={product.title} className="w-1/3 my-4" />
-            <p className="text-gray-600">{product.description}</p>
-            <p className="text-green-600 font-bold text-lg mt-2">${product.price}</p>
-            <p className="text-yellow-500">⭐ {product.rating.rate} ({product.rating.count} reviews)</p>
-
-            <div>
-            {
-          cart.some((p) => p.id === product.id) ?
-            (
-              <button
-                className="text-gray-700 border-2 border-gray-700 rounded-full font-semibold text-[12px] p-1 px-3 uppercase hover:bg-gray-700 hover:text-white transition duration-300 ease-in"
-                onClick={removeFromCart}>
-                Remove Item
-              </button>
-            ) :
-            (
-              <button
-                className="text-gray-700 border-2 border-gray-700 rounded-full font-semibold text-[12px] p-1 px-3 uppercase hover:bg-gray-700 hover:text-white transition duration-300 ease-in"
-                onClick={addToCart}>
-                Add to Cart
-              </button>
-            )
-        }
-            </div>
-        </div>
+      <div className="h-screen w-full flex justify-center items-center text-2xl font-semibold text-[#50a060]">
+        <Spinner />
+      </div>
     );
+  }
+
+  if (!product) {
+    return (
+      <div className="h-screen w-full flex justify-center items-center text-2xl font-semibold text-[#50a060]">
+        Product not found
+      </div>
+    );
+  }
+
+  const addToCart = () => {
+    dispatch(add(product));
+    toast.success("Item added to Cart");
+  };
+
+  const removeFromCart = () => {
+    dispatch(remove(product.id));
+    toast.error("Item removed from Cart");
+  };
+
+  const handleBuyNow = () => {
+    toast.error("This feature is not added yet.", { icon: "🚫" });
+  };
+
+  return (
+    <div className="max-w-5xl mx-auto p-6 mt-20">
+      {/* Product Container */}
+      <div className="flex flex-col md:flex-row gap-10 bg-white shadow-lg rounded-lg p-6 border border-gray-200">
+        {/* Left - Image */}
+        <div className="w-full md:w-1/2 flex justify-center">
+          <img
+            src={product.image}
+            alt={product.title}
+            className="w-full max-h-[400px] object-contain rounded-lg"
+          />
+        </div>
+
+        {/* Right - Details */}
+        <div className="w-full md:w-1/2 flex flex-col gap-4">
+          <h1 className="text-lg font-bold text-gray-800">{product.title}</h1>
+          <p className="text-gray-600  capitalize"><span className="font-semibold text-gray-700">Brand:</span> {product.brand}</p>
+          <p className="text-gray-600"><span className="font-semibold text-gray-700">Model:</span> {product.model}</p>
+          <div className="flex gap-4">
+            <p className="text-gray-600 capitalize"><span className="font-semibold text-gray-700">Category:</span> {product.category}</p>
+            <p className="text-gray-600 capitalize"><span className="font-semibold text-gray-700">Color:</span> {product.color}</p>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <p className="text-green-600 font-bold text-xl">
+              ${product.discount > 0 ? (product.price * (1 - product.discount / 100)).toFixed(2) : product.price}
+            </p>
+            {product.discount > 0 && (
+              <span className="text-red-500 font-semibold  bg-red-100 px-2 py-1 rounded">
+                -{product.discount}%
+              </span>
+            )}
+            {product.discount > 0 && (
+              <p className="text-gray-500 line-through">${product.price}</p>
+            )}
+          </div>
+
+          {/* Description with More/Less */}
+          <p className="text-gray-700 text-sm">
+            {showMore ? product.description : `${product.description.substring(0, 100)}...`}
+            <button
+              className="text-blue-600 font-semibold ml-2"
+              onClick={() => setShowMore(!showMore)}
+            >
+              {showMore ? "Show Less" : "Show More"}
+            </button>
+          </p>
+
+          {/* Buttons */}
+          <div className="flex flex-row gap-4 mt-4 w-full">
+  {cart.some((p) => p.id === product.id) ? (
+    <button
+      className="bg-red-600 text-white px-3 py-2 rounded-md text-xs font-semibold hover:bg-red-700 transition w-full max-w-[170px] h-10"
+      onClick={removeFromCart}
+    >
+      Remove from Cart
+    </button>
+  ) : (
+    <button
+      className="bg-blue-600 text-white px-3 py-2 rounded-md text-xs font-semibold hover:bg-blue-700 transition w-full max-w-[170px] h-10"
+      onClick={addToCart}
+    >
+      Add to Cart
+    </button>
+  )}
+
+  {/* Buy Now Button */}
+  <button
+    className="bg-orange-500 text-white px-3 py-2 rounded-md text-xs font-semibold hover:bg-orange-600 transition w-full max-w-[170px] h-10"
+    onClick={handleBuyNow}
+  >
+    Buy Now
+  </button>
+</div>
+
+
+
+        </div>
+      </div>
+
+      {/* Related Products Link */}
+      <div className="mt-10 text-center">
+        <Link
+          to={`/category/${product.category}`}
+          className="text-blue-600 font-semibold  hover:underline capitalize"
+        >
+          View More in {product.category}
+        </Link>
+      </div>
+    </div>
+  );
 }
