@@ -18,7 +18,10 @@ ReactCart is a responsive e-commerce practice project built using React, Redux, 
 - **FakeStore API** – Fetches product data
 
 ## API Used
-- https://fakestoreapi.in/
+- [FakeStore API](https://fakestoreapi.in/)
+
+## Live Demo  
+🔗 **[ReactCart Live](https://mithunam-reactcart-project.netlify.app/)**  
 
 ## Installation
 
