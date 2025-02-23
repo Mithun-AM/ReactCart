@@ -51,9 +51,9 @@ export default function SingleProduct() {
 
   return (
     <div className="max-w-5xl mx-auto p-6 mt-20">
-      {/* Product Container */}
+
       <div className="flex flex-col md:flex-row gap-10 bg-white shadow-lg rounded-lg p-6 border border-gray-200">
-        {/* Left - Image */}
+
         <div className="w-full md:w-1/2 flex justify-center">
           <img
             src={product.image}
@@ -62,7 +62,6 @@ export default function SingleProduct() {
           />
         </div>
 
-        {/* Right - Details */}
         <div className="w-full md:w-1/2 flex flex-col gap-4">
           <h1 className="text-lg font-bold text-gray-800">{product.title}</h1>
           <p className="text-gray-600  capitalize"><span className="font-semibold text-gray-700">Brand:</span> {product.brand}</p>
@@ -86,7 +85,6 @@ export default function SingleProduct() {
             )}
           </div>
 
-          {/* Description with More/Less */}
           <p className="text-gray-700 text-sm">
             {showMore ? product.description : `${product.description.substring(0, 100)}...`}
             <button
@@ -97,32 +95,30 @@ export default function SingleProduct() {
             </button>
           </p>
 
-          {/* Buttons */}
           <div className="flex flex-row gap-4 mt-4 w-full">
-  {cart.some((p) => p.id === product.id) ? (
-    <button
-      className="bg-red-600 text-white px-3 py-2 rounded-md text-xs font-semibold hover:bg-red-700 transition w-full max-w-[170px] h-10"
-      onClick={removeFromCart}
-    >
-      Remove from Cart
-    </button>
-  ) : (
-    <button
-      className="bg-blue-600 text-white px-3 py-2 rounded-md text-xs font-semibold hover:bg-blue-700 transition w-full max-w-[170px] h-10"
-      onClick={addToCart}
-    >
-      Add to Cart
-    </button>
-  )}
+            {cart.some((p) => p.id === product.id) ? (
+              <button
+                className="bg-red-600 text-white px-3 py-2 rounded-md text-xs font-semibold hover:bg-red-700 transition w-full max-w-[170px] h-10"
+                onClick={removeFromCart}
+              >
+                Remove from Cart
+              </button>
+            ) : (
+              <button
+                className="bg-blue-600 text-white px-3 py-2 rounded-md text-xs font-semibold hover:bg-blue-700 transition w-full max-w-[170px] h-10"
+                onClick={addToCart}
+              >
+                Add to Cart
+              </button>
+            )}
 
-  {/* Buy Now Button */}
-  <button
-    className="bg-orange-500 text-white px-3 py-2 rounded-md text-xs font-semibold hover:bg-orange-600 transition w-full max-w-[170px] h-10"
-    onClick={handleBuyNow}
-  >
-    Buy Now
-  </button>
-</div>
+            <button
+              className="bg-orange-500 text-white px-3 py-2 rounded-md text-xs font-semibold hover:bg-orange-600 transition w-full max-w-[170px] h-10"
+              onClick={handleBuyNow}
+            >
+              Buy Now
+            </button>
+          </div>
 
 
 

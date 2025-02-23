@@ -23,14 +23,13 @@ export default function Cart() {
     <div className={`${cart.length > 0 ? "mt-24 mb-10 px-4 md:px-10" : "h-screen flex justify-center items-center text-center"}`}>
       {cart.length > 0 ? (
         <div className="w-full max-w-7xl mx-auto flex flex-col md:flex-row gap-10 md:gap-16">
-          {/* Left - Cart Items */}
+
           <div className="w-full md:w-2/3 flex flex-col gap-4">
             {cart.map((item, index) => (
               <CartItem key={item.id} item={item} itemIdx={index} />
             ))}
           </div>
 
-          {/* Right - Summary */}
           <div className="w-full md:w-1/3 bg-white shadow-lg rounded-lg p-6 self-start sticky top-24">
             <h2 className="md:text-xl font-semibold text-gray-800 uppercase">Your Cart</h2>
             <p className="text-2xl font-bold text-green-700 uppercase my-3">Summary</p>

@@ -25,7 +25,6 @@ export default function CategoryPage() {
                             Category: <span className="font-semibold text-[#00875A] uppercase">{category}</span>
                         </h2>
 
-                        {/* Responsive Grid (Same as Home.jsx) */}
                         <div className="grid xs:grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 place-items-center">
                             {items.map((item) => (
                                 <Product key={item.id} item={item} />

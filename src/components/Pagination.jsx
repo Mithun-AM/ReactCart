@@ -3,7 +3,7 @@ import { FaAngleLeft, FaAngleRight } from "react-icons/fa";
 
 export default function Pagination({ currentPage, setSearchParams }) {
   const { status } = useSelector((state) => state.products);
-  const totalPages = 3; // Adjust dynamically if needed
+  const totalPages = 3;
 
   const changePage = (newPage) => {
     setSearchParams({ page: newPage });
@@ -13,7 +13,7 @@ export default function Pagination({ currentPage, setSearchParams }) {
     <div className="py-4 flex justify-center items-center">
       {status !== "loading" && (
         <div className="flex items-center space-x-2 bg-white shadow-md rounded-full px-4 py-2 border">
-          {/* Previous Button */}
+
           <button
             onClick={() => changePage(Math.max(currentPage - 1, 1))}
             disabled={currentPage === 1}
@@ -23,7 +23,6 @@ export default function Pagination({ currentPage, setSearchParams }) {
             <FaAngleLeft />
           </button>
 
-          {/* Page Numbers */}
           <div className="flex items-center space-x-1">
             {[...Array(totalPages)].map((_, index) => {
               const pageNum = index + 1;
@@ -40,7 +39,6 @@ export default function Pagination({ currentPage, setSearchParams }) {
             })}
           </div>
 
-          {/* Next Button */}
           <button
             onClick={() => changePage(Math.min(currentPage + 1, totalPages))}
             disabled={currentPage === totalPages}

@@ -26,20 +26,17 @@ export default function Product({ item }) {
       className="bg-white border border-gray-200 rounded-lg shadow-md hover:shadow-lg transition-transform transform hover:scale-105 p-4 
       w-full sm:w-[95%] max-w-[290px] min-[425px]:max-w-[300px] flex flex-col h-full">
       
-      {/* Image Section */}
       <NavLink to={`/${item.id}`} className="w-full h-48 flex justify-center items-center bg-white rounded-md overflow-hidden">
         <img src={item.image} alt="Not Available" className="w-full h-full object-contain hover:scale-105 transition-transform duration-300" />
       </NavLink>
 
-      {/* Content Wrapper to Maintain Equal Heights */}
       <div className="flex-grow flex flex-col">
-        {/* Title & Description */}
+
         <NavLink to={`/${item.id}`} className="text-lg font-semibold text-gray-800 hover:text-green-700 hover:underline line-clamp-2">
           {item.title.length > 50 ? item.title.substring(0, 50) + "..." : item.title}
         </NavLink>
         <p className="text-sm text-gray-500 mt-1 flex-grow">{item.description.substring(0, 50) + "..." }</p>
 
-        {/* Price Section (Sticks to Bottom) */}
         <div className="flex items-center justify-between mt-auto">
           <div className="flex flex-col">
             <span className="text-gray-500 line-through text-sm">${item.price.toFixed(2)}</span>
@@ -47,7 +44,6 @@ export default function Product({ item }) {
             {discountPercentage > 0 && <span className="text-xs text-red-600 font-semibold">-{discountPercentage}% OFF</span>}
           </div>
 
-          {/* Add/Remove Button */}
           {cart.some((p) => p.id === item.id) ? (
             <button onClick={removeFromCart} className="group w-10 h-10 rounded-full border border-red-300 bg-red-100 flex justify-center items-center 
               hover:border-red-700 hover:bg-red-700 transition-all duration-300">
